@@ -1,36 +1,26 @@
-# AI Agent开发案例1 —— 对话机器人
-
-## 1. 目标
-
-1. Define state structure with a list of HumanMessage objects.
-
-2. Initialize a GPT-4o model using LangChain's ChatOpenAl
-
-3. Sending and handling different types of messages
-
-4. Building and compiling the graph of the Agent
-
-核心目标：
-
-1. How to integrate LLMs in our Graphs
-
-## 2. 实现
-
-```py
 import os
 
-from typing import TypedDict, List
-from langchain_core.messages import HumanMessage
+from typing import TypedDict, List, Union
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 from dotenv import load_dotenv
 
 class AgentState(TypedDict):
     llm: ChatOpenAI
-    messages: List[HumanMessage]
+    messages: List[Union[HumanMessage, AIMessage]]
 
 def process(state: AgentState) -> AgentState:
-    response = state['llm'].invoke(state['messages'])
+    """This node will solve the request you input"""
+    try:
+        response = state['llm'].invoke(state['messages'])
+    except Exception as e:
+        print("LLM Error")
+        return state
+
+    # 添加AIMessage
+    state['messages'].append(AIMessage(content=response.content))
+
     print('#' * 64)
     print(f"AI:\n{response.content}")
     print('#' * 64)
@@ -38,7 +28,8 @@ def process(state: AgentState) -> AgentState:
 
 if __name__ == '__main__':
     curr_dir = os.path.dirname(os.path.abspath(__file__))
-    env_path = os.path.join(os.path.dirname(curr_dir), ".env")
+    proj_dir = os.path.dirname(os.path.dirname(curr_dir))
+    env_path = os.path.join(proj_dir, ".env")
     _ = load_dotenv(dotenv_path=env_path, override=True)
 
     llm = ChatOpenAI(
@@ -54,13 +45,21 @@ if __name__ == '__main__':
 
     agent = graph.compile()
 
+    conversation_history = []
+
     query_input = input("Enter: ")
     while query_input != "exit":
         if query_input:
-            agent.invoke({
+            # 添加HumanMessage
+            conversation_history.append(HumanMessage(content=query_input))
+
+            result = agent.invoke({
                 "llm": llm,
-                "messages": [HumanMessage(content=query_input)]
+                "messages": conversation_history
             })
 
         query_input = input("Enter: ")
-```
+    
+    # 打印所有的对话内容
+    for msg in conversation_history:
+        print(msg.content)
