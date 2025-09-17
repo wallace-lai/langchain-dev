@@ -48,9 +48,28 @@ def save(filename: str) -> str:
     except Exception as e:
         return f"Error saving document: {str(e)}"
 
+tools = [update, save]
+
+def agent(state: AgentState) -> AgentState:
+    system_prompt = SystemMessage(content=f"""
+    You are Drafter, a helpful writing assistant. You are going to help the user update and modify documents.
+    
+    - If the user wants to update or modify content, use the 'update' tool with the complete updated content.
+    - If the user wants to save and finish, you need to use the 'save' tool.
+    - Make sure to always show the current document state after modifications.
+    
+    The current document content is:{document_content}
+    """)
+
 
 if __name__ == '__main__':
     curr_dir = os.path.dirname(os.path.abspath(__file__))
     proj_dir = os.path.dirname(os.path.dirname(curr_dir))
     env_path = os.path.join(proj_dir, ".env")
     _ = load_dotenv(dotenv_path=env_path, override=True)
+
+    llm = ChatOpenAI(
+        model="gpt-4o",
+        api_key=os.environ['OPENAI_API_KEY'],
+        base_url=os.environ['OPENAI_API_BASE']
+    ).bind_tools(tools)
