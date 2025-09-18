@@ -1,4 +1,4 @@
-# AI Agent开发案例2 —— ReAct Agent
+# AI Agent开发案例3 —— ReAct Agent
 
 ## 1. 目标
 
