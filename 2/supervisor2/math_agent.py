@@ -1,4 +1,3 @@
-# from utils import pretty_print_messages
 from langgraph.prebuilt import create_react_agent
 
 def add(a: float, b: float):
@@ -34,7 +33,7 @@ math_agent = create_react_agent(
 #         "messages": [
 #             {
 #                 "role": "user",
-#                 "content": "what is (3 + 5) * 7"
+#                 "content": "what is (3+ 5) * 7"
 #             }
 #         ]
 #     }

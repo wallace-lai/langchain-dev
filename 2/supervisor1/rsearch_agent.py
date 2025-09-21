@@ -1,6 +1,3 @@
-# import os
-
-# from dotenv import load_dotenv
 # from utils import pretty_print_messages
 
 from langchain_tavily import TavilySearch
@@ -25,7 +22,7 @@ research_agent = create_react_agent(
 #     {
 #         "messages": [{
 #             "role": "user",
-#             "content": "who is the mayor of NYC?"
+#             "content": "who is the CEO of Intel Company?"
 #         }]
 #     }
 # ):
