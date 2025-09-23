@@ -26,8 +26,8 @@ _ = load_dotenv(dotenv_path=env_path, override=True)
 ## 1.1 Fetch documents to use in our RAG system
 urls = [
     "https://lilianweng.github.io/posts/2024-11-28-reward-hacking/",
-    # "https://lilianweng.github.io/posts/2024-07-07-hallucination/",
-    # "https://lilianweng.github.io/posts/2024-04-12-diffusion-video/", 
+    "https://lilianweng.github.io/posts/2024-07-07-hallucination/",
+    "https://lilianweng.github.io/posts/2024-04-12-diffusion-video/", 
 ]
 
 docs = [WebBaseLoader(url).load() for url in urls]
